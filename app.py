@@ -1,8 +1,12 @@
 from flask import *
-import subprocess
-import sys
+from inference_sdk import InferenceHTTPClient
 
 app = Flask(__name__)
+
+client = InferenceHTTPClient(
+    api_url="https://detect.roboflow.com",
+    api_key="r5nDcPfmL8cZWXu4Jg8v"
+)
 
 @app.route('/')  # Homepage
 def home():
@@ -16,8 +20,13 @@ def home():
 
 @app.route('/run-yolo', methods=['POST'])
 def run_yolo():
-
-    pass
+    result = client.infer_from_workflow(
+        workspace_name="practiceproject-kutwd",
+        workflow_id="custom-workflow",
+        images={
+            "image": "YOUR_IMAGE.jpg"
+        }
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
