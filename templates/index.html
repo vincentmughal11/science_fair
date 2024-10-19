@@ -40,8 +40,14 @@
                 </div>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                   <div class="card-body">
-                      <p>When you click this button, it will start the detection process. This will take a few seconds.</p>
-                      <button class="btn btn-primary mb-3" id="detect-btn">Start detection</button>
+                      <p>First take an overhead picture of the microplastics. Please make sure the entire volume of water is visible.</p>
+                      <button class="btn btn-dark" id="take-pic-btn">Take picture</button>
+                      <video src="" id="video" width="100%"></video>
+                      <canvas id="canvas" width="100%" style="display:none;"></canvas>
+                      <hr>
+                      <p>Next, click the button below to start the detection.</p>
+                      <button class="btn btn-primary" id="detect-btn">Start detection</button>
+                      <hr>
                       <p id="status">The result will be displayed here.</p>
                       <img class="rounded" style="display: none; max-width: 100%;" id="detected-img" src="" alt="detected microplastics image">
                   </div>
@@ -57,7 +63,13 @@
                 </div>
                 <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                   <div class="card-body">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                    <ul>
+                      <li><strong>Step 1: Prepare the Ferrofluid</strong><br> Mix vegetable oil with iron oxide powder to create a magnetic liquid called ferrofluid.</li>
+                      <li><strong>Step 2: Add Microplastics</strong><br> Add microplastics from various sources (e.g., plastic bottles, paint, car tires) to the ferrofluid mixture.</li>
+                      <li><strong>Step 3: Mix Thoroughly</strong><br> Ensure the microplastics are evenly distributed throughout the ferrofluid.</li>
+                      <li><strong>Step 4: Apply Magnet</strong><br> Use a magnet to separate the ferrofluid-microplastic mixture from the remaining water.</li>
+                      <li><strong>Step 5: Collect and Dispose</strong><br> Collect the extracted microplastics and dispose of them properly. Repeat the process as needed.</li>
+                  </ul>
                   </div>
                 </div>
               </div>
@@ -103,6 +115,29 @@
               document.getElementById('status').innerText = "Error during frontend detection: " + error;
           });
       });
+
+      const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const captureButton = document.getElementById('capture');
+
+        // Access the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+            video.srcObject = stream;
+        })
+        .catch(function (err) {
+            console.error("Error accessing the camera: " + err);
+        });
+
+        // Capture the image when the button is clicked
+        captureButton.addEventListener('click', function () {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // You can display the captured image or process it further here
+            const imageData = canvas.toDataURL('image/png');
+            console.log(imageData);  // This is the base64 data of the captured image
+            // You can now send this image to your server for microplastic detection
+        });
   </script>
   </body>
 </html>
