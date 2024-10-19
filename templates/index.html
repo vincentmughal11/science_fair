@@ -43,6 +43,7 @@
                       <p>When you click this button, it will start the detection process. This will take a few seconds.</p>
                       <button class="btn btn-primary mb-3" id="detect-btn">Start detection</button>
                       <p id="status">The result will be displayed here.</p>
+                      <img class="rounded" style="display: none; max-width: 100%;" id="detected-img" src="" alt="detected microplastics image">
                   </div>
                 </div>
               </div>
@@ -92,8 +93,11 @@
           })
           .then(response => response.json())
           .then(data => {
-              document.getElementById('status').innerText = "Detection results: " + data.result;
+              document.getElementById('status').innerText = "Detection results: " + data.ai_response + "...";
               console.log(data)
+
+              document.getElementById('detected-img').style.display = "block";
+              document.getElementById('detected-img').src = "data:image/jpg;base64," + data.image
           })
           .catch(error => {
               document.getElementById('status').innerText = "Error during frontend detection: " + error;
