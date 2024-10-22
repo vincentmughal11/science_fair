@@ -8,7 +8,7 @@
     </head>
   </head>
   <body>
-      <div class="container mx-auto pt-5 pb-5" style="max-width: 600px;">
+      <div class="container mx-auto" style="max-width: 600px;">
           <div class="bg-primary p-4 my-4 rounded">
               <h1 class="text-white">Microplatics detection and filtration</h1>
               <p class="text-white">Here is the guide to detect and filtrate your micrplastics!</p>
@@ -40,13 +40,13 @@
                 </div>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                   <div class="card-body">
-                      <p>First take an overhead picture of the microplastics. Please make sure the entire volume of water is visible.</p>
-                      <button class="btn btn-dark" id="take-pic-btn">Take picture</button>
-                      <video src="" id="video" width="100%"></video>
-                      <canvas id="canvas" width="100%" style="display:none;"></canvas>
-                      <hr>
-                      <p>Next, click the button below to start the detection.</p>
-                      <button class="btn btn-primary" id="detect-btn">Start detection</button>
+                      <p>Take an overhead view of the water where you want to detect microplastics. Then click the button below to start the detection.</p>
+                      <form action="/upload" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <input type="file" id="cameraInput" accept="image/*" capture="camera" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Start detection</button>
+                      </form>
                       <hr>
                       <p id="status">The result will be displayed here.</p>
                       <img class="rounded" style="display: none; max-width: 100%;" id="detected-img" src="" alt="detected microplastics image">
@@ -115,29 +115,6 @@
               document.getElementById('status').innerText = "Error during frontend detection: " + error;
           });
       });
-
-      const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-        const captureButton = document.getElementById('capture');
-
-        // Access the camera
-        navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function (stream) {
-            video.srcObject = stream;
-        })
-        .catch(function (err) {
-            console.error("Error accessing the camera: " + err);
-        });
-
-        // Capture the image when the button is clicked
-        captureButton.addEventListener('click', function () {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            // You can display the captured image or process it further here
-            const imageData = canvas.toDataURL('image/png');
-            console.log(imageData);  // This is the base64 data of the captured image
-            // You can now send this image to your server for microplastic detection
-        });
   </script>
   </body>
 </html>
