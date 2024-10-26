@@ -3,22 +3,27 @@ from inference_sdk import InferenceHTTPClient
 import os
 from PIL import Image
 import io
-import requests
-import json
 import os
 from werkzeug.utils import secure_filename
 import base64
-import numpy as np
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+load_dotenv()
+
+api_key = os.getenv("API_KEY")
+workspace_name = os.getenv("WORKSPACE_NAME")
+workspace_id = os.getenv("WORKFLOW_ID")
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+port = os.getenv("PORT")
+
+print(workspace_name, workspace_id)
 
 
 client = InferenceHTTPClient(
     api_url="https://detect.roboflow.com",
-    api_key="r5nDcPfmL8cZWXu4Jg8v"
+    api_key=api_key
 )
-
-UPLOAD_FOLDER = 'detect_imgs'
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -57,8 +62,8 @@ def detect():
 
 
     result = client.run_workflow(
-        workspace_name="practiceproject-kutwd",
-        workflow_id="custom-workflow",
+        workspace_name=workspace_name,
+        workflow_id=workspace_id,
         images={
             "image": img_base64,
             "data": img_base64
@@ -76,4 +81,4 @@ def detect():
     })
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
