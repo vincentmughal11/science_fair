@@ -17,8 +17,6 @@ workspace_id = os.getenv("WORKFLOW_ID")
 UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
 port = os.getenv("PORT")
 
-print(workspace_name, workspace_id)
-
 
 client = InferenceHTTPClient(
     api_url="https://detect.roboflow.com",
@@ -75,9 +73,58 @@ def detect():
     image = result[0]["label_visualization"]
     ai_response = result[0]['open_ai']['output']
 
+
     return jsonify({
         "ai_response": ai_response,
         "image": image
+    })
+
+@app.route('/final_detect', methods=['POST'])
+def final_detect():
+     # Get the image file
+    before_img_base64 = request.form.get('before_image', 'false')
+    image_file = request.files['finalCameraInput']
+
+    if before_img_base64 == 'false':
+        return make_response({"message": "You have to run the phase 1 detection first"}, 500)
+
+    filename = secure_filename(image_file.filename)
+    image_file.save(os.path.join(UPLOAD_FOLDER, filename))
+    
+    # Send the processed image to Roboflow
+    with open(os.path.join(UPLOAD_FOLDER, filename), 'rb') as image_file:
+       # Assume `image_bytes` contains your image data in bytes
+        image_bytes = image_file.read()
+
+        # Convert bytes to a PIL Image
+        image = Image.open(io.BytesIO(image_bytes))
+
+        # Convert the PIL Image to a byte stream
+        buffered = io.BytesIO()
+        image.save(buffered, format="JPEG")  # or 'PNG', depending on your image
+
+        # Encode the byte stream to base64
+        img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+
+
+    result = client.run_workflow(
+        workspace_name=workspace_name,
+        workflow_id=workspace_id,
+        images={
+            "image": img_base64,
+            "data": img_base64
+        }
+    )
+
+    os.remove(os.path.join(UPLOAD_FOLDER, filename))
+
+    image = result[0]["label_visualization"]
+    ai_response = result[0]['open_ai']['output']
+
+    return jsonify({
+        "ai_response": ai_response,
+        "image": image,
+        "before_image": before_img_base64
     })
 
 if __name__ == "__main__":

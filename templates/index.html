@@ -74,6 +74,7 @@
                                         document.getElementById('status').innerText = "Detection results: " + data.ai_response + "...";
                                         document.getElementById('detected-img').style.display = "block";
                                         document.getElementById('detected-img').src = "data:image/jpg;base64," + data.image
+                                        sessionStorage.setItem('before_image', data.image);
                                       }
                                   )
                                   .catch(error => {
@@ -119,8 +120,75 @@
                   </div>
                   <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
                     <div class="card-body">
-                      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                    </div>
+                      <p>Take an overhead view of the water where you want to detect microplastics. Then click the button below to start the detection.</p>
+                      <form action="/final_detect" id="finalDetectForm" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <input type="file" id="finalCameraInput" accept="image/*" capture="camera" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="final-detect-btn">Start detection</button>
+                        <script>
+                          document.addEventListener('DOMContentLoaded', function() {
+                              const finalForm = document.getElementById('finalDetectForm');
+                              const finalStatus = document.getElementById('final-status');
+                              
+                              finalForm.addEventListener('submit', function(e) {
+                                  e.preventDefault();
+
+                                  finalStatus.innerText = "Detecting microplastics...";
+                                  
+                                  const formData = new FormData(finalForm);
+                                  formData.append('finalCameraInput', document.getElementById('finalCameraInput').files[0]);
+                                  if (sessionStorage.getItem('before_image')) {
+                                    formData.append('before_image', sessionStorage.getItem('before_image'));
+                                  } else {
+                                    formData.append('before_image', 'false');
+                                  }
+                                  console.log(formData);
+                                  
+                                  fetch('/final_detect', {
+                                      method: 'POST',
+                                      body: formData
+                                  })
+                                  .then(response => {
+                                      if (!response.ok) {
+                                          throw new Error('Network response was not ok');
+                                      }
+                                      return response.json();
+                                  })
+                                  .then(data => {
+                                        document.getElementById('final-display-container').style.display = "block";
+                                        document.getElementById('final-status').innerText = "Detection results: " + data.ai_response + "...";
+                                        document.getElementById('final-before-img').style.display = "block";
+                                        document.getElementById('final-before-img').src = "data:image/jpg;base64," + data.before_image,
+                                        document.getElementById('final-after-img').style.display = "block";
+                                        document.getElementById('final-after-img').src = "data:image/jpg;base64," + data.image
+                                      }
+                                  )
+                                  .catch(error => {
+                                    document.getElementById('final-status').innerText = "Error during frontend detection: " + error;
+                                  });
+                              });
+                          });
+                      </script>
+                      </form>
+                      <hr>
+                      <p id="final-status">The result will be displayed here.</p>
+                      <div class="container" id="final-display-container" style="max-width:100%; display: none;">
+                          <div class="card mb-2">
+                            <div class="card-body rounded image-container">
+                              <p class="image-title">Before Detection</p>
+                              <img id="final-before-img" src="" alt="Before Detection" class="img-fluid">
+                            </div>
+                          </div>
+                          <div class="card">
+                            <div class="card-body rounded image-container">
+                              <p class="image-title">After Detection</p>
+                              <img id="final-after-img" src="" alt="After Detection" class="img-fluid">
+                            </div>
+                          </div>
+                      </div>
+                </div>
+                  </div>
                   </div>
               </div>
           </div>
