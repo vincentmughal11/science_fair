@@ -82,6 +82,7 @@
                                    .then(data => {
                                          // Display detection results
                                          document.getElementById('status').innerText = "Detection notes: " + data.ai_response + "...";
+                                         document.getElementById('detected-count').innerText = "Amount of microplastics detected: " + data.detected_count;
                                          document.getElementById('detected-img').style.display = "block";
                                          document.getElementById('detected-img').src = "data:image/jpg;base64," + data.image
                                          sessionStorage.setItem('before_image', data.image);
@@ -97,6 +98,7 @@
                      <hr>
                      <!-- Detection results display area -->
                      <p id="status">The result will be displayed here.</p>
+                     <p id="detected-count">Amount of microplastics detected: run the test first...</p>
                      <img class="rounded" style="display: none; max-width: 100%;" id="detected-img" src="" alt="detected microplastics image">
                   </div>
                </div>
@@ -180,6 +182,7 @@
                                          document.getElementById('final-before-img').src = "data:image/jpg;base64," + data.before_image,
                                          document.getElementById('final-after-img').style.display = "block";
                                          document.getElementById('final-after-img').src = "data:image/jpg;base64," + data.image
+                                         document.getElementById('final-detected-count').innerText = "Final microplastics count: " + data.detected_count;
                                        }
                                    )
                                    .catch(error => {
@@ -192,6 +195,7 @@
                      <hr>
                      <!-- Final detection results display area -->
                      <p id="final-status">The result will be displayed here.</p>
+                     <p id="final-detected-count">Final microplastics count: run the test first...</p>
                      <div class="container" id="final-display-container" style="max-width:100%; display: none;">
                         <div class="card mb-2">
                            <div class="card-body rounded image-container">

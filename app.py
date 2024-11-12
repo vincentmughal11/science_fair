@@ -79,9 +79,16 @@ def detect():
     # Extract results
     image = result[0]["label_visualization"]
     ai_response = result[0]["open_ai"]["output"]
+    detected_count = result[0]["property_definition"]
 
     # Return JSON response with results
-    return jsonify({"ai_response": ai_response, "image": image})
+    return jsonify(
+        {
+            "ai_response": ai_response,
+            "image": image,
+            "detected_count": detected_count,
+        }
+    )
 
 
 @app.route("/final_detect", methods=["POST"])
@@ -129,13 +136,17 @@ def final_detect():
     # Extract results
     image = result[0]["label_visualization"]
     ai_response = result[0]["open_ai"]["output"]
+    detected_count = result[0]["property_definition"]
 
     # Return JSON response with results and previous image
-    return jsonify({
-        "ai_response": ai_response,
-        "image": image,
-        "before_image": before_img_base64
-    })
+    return jsonify(
+        {
+            "ai_response": ai_response,
+            "image": image,
+            "before_image": before_img_base64,
+            "detected_count": detected_count,
+        }
+    )
 
 
 # Run the Flask app

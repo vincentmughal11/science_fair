@@ -1,2 +1,6 @@
 .env
 *.cfg
+Scripts/
+Include/
+Lib/
+share/
