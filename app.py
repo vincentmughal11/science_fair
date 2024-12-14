@@ -1,5 +1,5 @@
 # Import required libraries
-from flask import Flask, request, jsonify, render_template, make_response
+from flask import Flask, request, jsonify, render_template, make_response, send_from_directory
 from inference_sdk import InferenceHTTPClient
 from PIL import Image
 import io
@@ -147,6 +147,12 @@ def final_detect():
             "detected_count": detected_count,
         }
     )
+
+@app.route("/download/<filename>")
+def download_file(filename):
+    # Specify the directory where your file is stored
+    directory = os.path.join(app.root_path, 'files')
+    return send_from_directory(directory, filename)
 
 
 # Run the Flask app
