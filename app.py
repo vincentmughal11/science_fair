@@ -6,6 +6,9 @@ import io
 import os
 from werkzeug.utils import secure_filename
 import base64
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 # Initialize Flask app
@@ -141,8 +144,7 @@ def final_detect():
         {
             "ai_response": ai_response,
             "image": image,
-            "before_image": before_img_base64,
-            "detected_count": detected_count,
+            "detected_count": detected_count
         }
     )
 
@@ -155,4 +157,4 @@ def download_file(filename):
 
 # Run the Flask app
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=port, debug=True)

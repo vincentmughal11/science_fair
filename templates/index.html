@@ -67,7 +67,6 @@
                                    // Create form data and append file
                                    const formData = new FormData(form);
                                    formData.append('cameraInput', document.getElementById('cameraInput').files[0]);
-                                   console.log(formData);
                                    
                                    // Send detection request to server
                                    fetch('/detect', {
@@ -82,7 +81,7 @@
                                    })
                                    .then(data => {
                                          // Display detection results
-                                         document.getElementById('status').innerText = "Detection notes: " + data.ai_response + "...";
+                                         document.getElementById('status').innerText = "Results:";
                                          document.getElementById('detected-count').innerText = "Amount of microplastics detected: " + data.detected_count;
                                          document.getElementById('detected-img').style.display = "block";
                                          document.getElementById('detected-img').src = "data:image/jpg;base64," + data.image
@@ -154,15 +153,14 @@
                            
                                    finalStatus.innerText = "Detecting microplastics...";
                                    
-                                   // Create form data and append files
+                                   // Create form data and append file
                                    const formData = new FormData(finalForm);
                                    formData.append('finalCameraInput', document.getElementById('finalCameraInput').files[0]);
                                    if (sessionStorage.getItem('before_image')) {
-                                     formData.append('before_image', sessionStorage.getItem('before_image'));
+                                     formData.append('before_image', 'true');
                                    } else {
                                      formData.append('before_image', 'false');
                                    }
-                                   console.log(formData);
                                    
                                    // Send final detection request to server
                                    fetch('/final_detect', {
@@ -177,10 +175,10 @@
                                    })
                                    .then(data => {
                                          // Display final detection results
+                                         finalStatus.innerText = "Results:";
                                          document.getElementById('final-display-container').style.display = "block";
-                                         document.getElementById('final-status').innerText = "Detection notes: " + data.ai_response + "...";
                                          document.getElementById('final-before-img').style.display = "block";
-                                         document.getElementById('final-before-img').src = "data:image/jpg;base64," + data.before_image,
+                                         document.getElementById('final-before-img').src = "data:image/jpg;base64," + sessionStorage.getItem('before_image'),
                                          document.getElementById('final-after-img').style.display = "block";
                                          document.getElementById('final-after-img').src = "data:image/jpg;base64," + data.image
                                          document.getElementById('final-detected-count').innerText = "Final microplastics count: " + data.detected_count;

@@ -4,3 +4,5 @@ Scripts/
 Include/
 Lib/
 share/
+venv/
+__pycache__/
