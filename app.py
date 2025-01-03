@@ -6,19 +6,17 @@ import io
 import os
 from werkzeug.utils import secure_filename
 import base64
-from dotenv import load_dotenv
 
 
 # Initialize Flask app
 app = Flask(__name__)
-load_dotenv()
 
 # Load environment variables
-api_key = os.getenv("API_KEY")
-workspace_name = os.getenv("WORKSPACE_NAME")
-workspace_id = os.getenv("WORKFLOW_ID")
-UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
-port = os.getenv("PORT")
+api_key = os.environ.get("API_KEY")
+workspace_name = os.environ.get("WORKSPACE_NAME")
+workspace_id = os.environ.get("WORKFLOW_ID")
+UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER")
+port = os.environ.get("PORT")
 
 
 # Initialize Roboflow client
@@ -157,4 +155,4 @@ def download_file(filename):
 
 # Run the Flask app
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run()
